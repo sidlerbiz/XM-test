@@ -8,7 +8,7 @@
 
 ## Local usage
 1. Clone project. 
-2. Run `docker-compose up -d --build`
+2. Run `docker-compose up -d`
 3. Run `docker exec -it php composer install`
 4. Run `docker exec -it php bin/console doctrine:migrations:migrate -n`
 5. Run `docker exec -it php bin/console app:company-store`
