@@ -44,7 +44,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"GET","POST"}, name="indexPage")
+     * @Route("/historical", methods={"GET","POST"}, name="historicalIndexPage")
      */
     public function index(Request $request): Response
     {

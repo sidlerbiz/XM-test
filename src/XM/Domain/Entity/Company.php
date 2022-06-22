@@ -40,9 +40,9 @@ class Company
     private ?string $securityName;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
-    private ?int $roundLotSize;
+    private ?float $roundLotSize;
 
     /**
      * @ORM\Column(type="string", length=5)
@@ -107,12 +107,12 @@ class Company
         return $this;
     }
 
-    public function getRoundLotSize(): ?int
+    public function getRoundLotSize(): ?float
     {
         return  $this->roundLotSize;
     }
 
-    public function setRoundLotSize(?int $roundLotSize): self
+    public function setRoundLotSize(?float $roundLotSize): self
     {
         $this->roundLotSize = $roundLotSize;
 
