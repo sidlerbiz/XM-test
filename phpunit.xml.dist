@@ -27,13 +27,19 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <report>
+            <html outputDirectory="var/reports/coverage"/>
+        </report>
     </coverage>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
 
+    <!-- Run `composer require symfony/panther` before enabling this extension -->
+    <!--
     <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+        <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
+    -->
 </phpunit>

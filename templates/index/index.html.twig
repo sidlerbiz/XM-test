@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Historical data search page {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-details mt-4">
+                    <h1 class="h4 mb-3 text-center font-weight-normal title-gradient-1">Historical Data Search Page</h1>
+                    <form method="post" id="dataSearchForm" name="dataSearchForm">
+                        <div class="form-group">
+                            <label for="companySymbolInput">Symbol</label>
+                            <input type="text" id="companySymbolInput" name="companySymbol">
+                            <small id="companySymbolHelp" class="text-danger">
+                                {% if errorData.companySymbol|default %}
+                                    {{ errorData.companySymbol }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDateInput">Start Date</label>
+                            <input type="text" id="startDateInput" name="startDate" class="js-datepicker">
+                            <small id="startDateHelp" class="text-danger">
+                                {% if errorData.startDate|default %}
+                                    {{ errorData.startDate }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDateInput">End Date</label>
+                            <input type="text" id="endDateInput" name="endDate" class="js-datepicker">
+                            <small id="endDateHelp" class="text-danger">
+                                {% if errorData.endDate|default %}
+                                    {{ errorData.endDate }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailInput">Email</label>
+                            <input type="email" id="emailInput" name="email">
+                            <small id="endDateHelp" class="text-danger">
+                                {% if errorData.email|default %}
+                                    {{ errorData.email }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success submitButton">
+                                <span>Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="table form-group">
+             <div class="table-responsive mt-4">
+                 <table class="table table-bordered" id="main_table">
+                     <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Open</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                     {% for chartItem in chartData%}
+                        <tr>
+                            <td>{{ chartItem.date }}</td>
+                            <td>{{ chartItem.open }}</td>
+                            <td>{{ chartItem.high }}</td>
+                            <td>{{ chartItem.low }}</td>
+                            <td>{{ chartItem.close }}</td>
+                            <td>{{ chartItem.volume }}</td>
+                        </tr>
+                     {% endfor %}
+                     </tbody>
+                 </table>
+             </div>
+        </div>
+    </div>
+    <div id="container"></div>
+    {% block javscripts %}
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-stock.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-data-adapter.min.js"></script>
+
+        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-ui.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-exports.min.js"></script>
+
+        <link href="https://cdn.anychart.com/releases/8.11.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+        <link href="https://cdn.anychart.com/releases/8.11.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+        <script>
+            $(document).ready(function() {
+                $('.js-datepicker').datepicker({
+                    format: 'yyyy-mm-dd'
+                });
+
+                var symbols = [];
+
+                {% for item in symbols %}
+                    symbols.push('{{ item }}');
+                {% endfor %}
+
+                $( "#companySymbolInput" ).autocomplete({
+                    source: symbols
+                });
+            });
+        </script>
+        {% if chartData  %}
+        <script>
+            anychart.onDocumentReady(function () {
+                var data = new Array();
+
+                {% for item in  chartData %}
+                    data.push([ '{{ item['date'] }}', '{{ item['open'] }}', '{{ item['high'] }}', '{{ item['low'] }}', '{{ item['close'] }}' ]);
+                {% endfor %}
+
+                table = anychart.data.table();
+                table.addData(data);
+                // mapping the data
+                mapping = table.mapAs();
+                mapping.addField('open', 1);
+                mapping.addField('high', 2);
+                mapping.addField('low', 3);
+                mapping.addField('close', 4);
+                chart = anychart.stock();
+                chart.plot(0).ohlc(mapping).name('{{ data['symbol']}}');
+                chart.title('{{ data['symbol']}} - company price historical data');
+                chart.container('container');
+                chart.draw();
+            });
+        </script>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
